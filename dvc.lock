@@ -4,9 +4,9 @@ stages:
     cmd: python src/train.py --config params.yaml
     deps:
     - path: data
-      md5: f25a5c1bda47f7b8cd7c5c1ddafb3746.dir
-      size: 466874688
-      nfiles: 5451
+      md5: 65110eb7cc4e54ff4754f53b5a8e3e66.dir
+      size: 467636694
+      nfiles: 16336
     - path: src/train.py
       md5: 14ba06532a7070ffa77f5a3111afd43a
       size: 1258
@@ -16,39 +16,39 @@ stages:
         n_epochs: 8
     outs:
     - path: dvclive.json
-      md5: 29603791fdda1d70f2e09cf471e5cb13
+      md5: e437ef6e25e5c4d521e0c81dfcc7c831
       size: 187
     - path: dvclive/scalars/accuracy.tsv
-      md5: 9a4c573d1cfd96133663103fd7f15155
-      size: 168
+      md5: 0b9ddcf0059bcc5701d1af049a30100b
+      size: 169
     - path: dvclive/scalars/eval/loss.tsv
-      md5: 9e04148a020fda4e7cf1580b2204a589
-      size: 175
+      md5: 7aa614d944753acfb200be2bf3b65e4d
+      size: 176
     - path: dvclive/scalars/train/loss.tsv
-      md5: 31a28afa535902b8b6473c1948cf7d2d
-      size: 174
+      md5: beedac1387212e75400880e32c0d9924
+      size: 175
     - path: model
-      md5: 7d651d0c37861f9b455924db91843395.dir
-      size: 103001759
+      md5: 84efd91b9226f3d8de1ed2167adcedca.dir
+      size: 103001695
       nfiles: 1
   inference:
     cmd: python src/inference.py
     deps:
     - path: data
-      md5: f25a5c1bda47f7b8cd7c5c1ddafb3746.dir
-      size: 466874688
-      nfiles: 5451
+      md5: 65110eb7cc4e54ff4754f53b5a8e3e66.dir
+      size: 467636694
+      nfiles: 16336
     - path: model
-      md5: 7d651d0c37861f9b455924db91843395.dir
-      size: 103001759
+      md5: 84efd91b9226f3d8de1ed2167adcedca.dir
+      size: 103001695
       nfiles: 1
     - path: src/inference.py
       md5: 829a5625f935a423f8463f95f7b28cba
       size: 1420
     outs:
     - path: predictions
-      md5: a13cb6ac2f7bfa32d7be1e9bc8efc8c3.dir
-      size: 86869
+      md5: ba8e68c7cef468d0cb8a916839611a2b.dir
+      size: 87164
       nfiles: 398
   misclassification:
     cmd:
@@ -58,8 +58,8 @@ stages:
       --target ./mislabeled
     deps:
     - path: predictions
-      md5: a13cb6ac2f7bfa32d7be1e9bc8efc8c3.dir
-      size: 86869
+      md5: ba8e68c7cef468d0cb8a916839611a2b.dir
+      size: 87164
       nfiles: 398
   submission:
     cmd:
@@ -70,6 +70,6 @@ stages:
       s3://ldb-hackathon-team-1/submission-alex/labelbook/
     deps:
     - path: predictions
-      md5: a13cb6ac2f7bfa32d7be1e9bc8efc8c3.dir
-      size: 86869
+      md5: ba8e68c7cef468d0cb8a916839611a2b.dir
+      size: 87164
       nfiles: 398

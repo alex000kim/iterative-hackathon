@@ -1,0 +1,46 @@
+stages:
+  train:
+    cmd: python src/train.py --config params.yaml
+    deps:
+      - src/train.py
+      - data
+    params:
+      - n_epochs
+      - batch_size
+    outs:
+      - model
+    metrics:
+      - dvclive.json:
+          cache: false
+    plots:
+      - dvclive/scalars/accuracy.tsv:
+          cache: false
+          x: step
+          y: eval/accuracy
+      - dvclive/scalars/accuracy.tsv:
+          cache: false
+          x: step
+          y: train/accuracy
+      - dvclive/scalars/eval/loss.tsv:
+          cache: false
+          x: step
+          y: eval/loss
+      - dvclive/scalars/train/loss.tsv:
+          cache: false
+          x: step
+          y: train/loss
+  inference:
+    cmd: python src/inference.py
+    deps:
+      - model
+      - data
+      - src/inference.py
+    outs:
+      - predictions
+  misclassification:
+    cmd:
+      - ldb index predictions/ --annotation-update merge
+      - ldb instantiate ds:root --query 'inference.confidence > `0.9` && label != inference.label' --target ./mislabeled
+      - rm -f mislabeled/*.json
+    deps:
+      - predictions

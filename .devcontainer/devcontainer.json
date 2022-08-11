@@ -1,0 +1,12 @@
+{
+    "name": "magnetic-tiles-defect",
+    "build": {
+      "dockerfile": "Dockerfile"
+    },
+    "extensions": [
+		"ms-python.python",
+		"Iterative.dvc",
+		"redhat.vscode-yaml"
+	],
+    "postCreateCommand": "python3 -m dvc pull"
+}

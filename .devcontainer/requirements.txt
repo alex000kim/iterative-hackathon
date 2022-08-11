@@ -1,0 +1,6 @@
+python-box
+fastai
+dvc[s3]
+dvclive
+awscli
+ldb-alpha[s3,clip-plugin,resnet-plugin]

@@ -40,7 +40,15 @@ stages:
   misclassification:
     cmd:
       - ldb index predictions/ --annotation-update merge
+      - rm -f mislabeled/*
       - ldb instantiate ds:root --query 'inference.confidence > `0.9` && label != inference.label' --target ./mislabeled
-      - rm -f mislabeled/*.json
+    deps:
+      - predictions
+  submission:
+    cmd:
+      - aws s3 rm s3://ldb-hackathon-team-1/submission-alex --recursive
+      - ldb instantiate ds:root --tag train --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/train/
+      - ldb instantiate ds:root --tag val --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/val/
+      - ldb instantiate ds:root --tag labelbook --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/labelbook/
     deps:
       - predictions

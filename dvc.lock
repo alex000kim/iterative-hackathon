@@ -4,9 +4,9 @@ stages:
     cmd: python src/train.py --config params.yaml
     deps:
     - path: data
-      md5: e398f1b68e5a20626ac4b9f98225a654.dir
-      size: 359250630
-      nfiles: 2034
+      md5: f25a5c1bda47f7b8cd7c5c1ddafb3746.dir
+      size: 466874688
+      nfiles: 5451
     - path: src/train.py
       md5: 14ba06532a7070ffa77f5a3111afd43a
       size: 1258
@@ -16,53 +16,60 @@ stages:
         n_epochs: 8
     outs:
     - path: dvclive.json
-      md5: 4126670298c400aac68c77b9c0cf4e9c
-      size: 185
+      md5: 29603791fdda1d70f2e09cf471e5cb13
+      size: 187
     - path: dvclive/scalars/accuracy.tsv
-      md5: 1550954d6021a74fe7c1f4c3a40fca32
+      md5: 9a4c573d1cfd96133663103fd7f15155
       size: 168
     - path: dvclive/scalars/eval/loss.tsv
-      md5: c0a67a7941c62305812cc9ce92f9266c
-      size: 174
+      md5: 9e04148a020fda4e7cf1580b2204a589
+      size: 175
     - path: dvclive/scalars/train/loss.tsv
-      md5: 849de61304d531713f844de1efc86f08
-      size: 172
+      md5: 31a28afa535902b8b6473c1948cf7d2d
+      size: 174
     - path: model
-      md5: fd1182bc4dd63963d355bf7980f9cbab.dir
-      size: 102923295
+      md5: 7d651d0c37861f9b455924db91843395.dir
+      size: 103001759
       nfiles: 1
   inference:
     cmd: python src/inference.py
     deps:
     - path: data
-      md5: e398f1b68e5a20626ac4b9f98225a654.dir
-      size: 359250630
-      nfiles: 2034
+      md5: f25a5c1bda47f7b8cd7c5c1ddafb3746.dir
+      size: 466874688
+      nfiles: 5451
     - path: model
-      md5: fd1182bc4dd63963d355bf7980f9cbab.dir
-      size: 102923295
+      md5: 7d651d0c37861f9b455924db91843395.dir
+      size: 103001759
       nfiles: 1
     - path: src/inference.py
       md5: 829a5625f935a423f8463f95f7b28cba
       size: 1420
     outs:
     - path: predictions
-      md5: bc31649928057f65ca112b03213b1c63.dir
-      size: 26020
-      nfiles: 119
+      md5: a13cb6ac2f7bfa32d7be1e9bc8efc8c3.dir
+      size: 86869
+      nfiles: 398
   misclassification:
     cmd:
     - ldb index predictions/ --annotation-update merge
+    - rm -f mislabeled/*
     - ldb instantiate ds:root --query 'inference.confidence > `0.9` && label != inference.label'
       --target ./mislabeled
-    - rm -f mislabeled/*.json
     deps:
     - path: predictions
-      md5: bc31649928057f65ca112b03213b1c63.dir
-      size: 26020
-      nfiles: 119
-    outs:
-    - path: mislabeled
-      md5: 12cf62284c8ef88256f6064d8130f986.dir
-      size: 877095
-      nfiles: 9
+      md5: a13cb6ac2f7bfa32d7be1e9bc8efc8c3.dir
+      size: 86869
+      nfiles: 398
+  submission:
+    cmd:
+    - aws s3 rm s3://ldb-hackathon-team-1/submission-alex --recursive
+    - ldb instantiate ds:root --tag train --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/train/
+    - ldb instantiate ds:root --tag val --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/val/
+    - ldb instantiate ds:root --tag labelbook --format annot -p single-file=true -t
+      s3://ldb-hackathon-team-1/submission-alex/labelbook/
+    deps:
+    - path: predictions
+      md5: a13cb6ac2f7bfa32d7be1e9bc8efc8c3.dir
+      size: 86869
+      nfiles: 398

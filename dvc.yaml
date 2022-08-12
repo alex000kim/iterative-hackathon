@@ -41,7 +41,7 @@ stages:
     cmd:
       - ldb index predictions/ --annotation-update merge
       - rm -f mislabeled/*
-      - ldb instantiate ds:root --query 'inference.confidence > `0.9` && label != inference.label' --target ./mislabeled
+      - ldb instantiate ds:root --query 'inference.confidence > `0.8` && label != inference.label' --target ./mislabeled
     deps:
       - predictions
   submission:

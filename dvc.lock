@@ -4,9 +4,9 @@ stages:
     cmd: python src/train.py --config params.yaml
     deps:
     - path: data
-      md5: 65110eb7cc4e54ff4754f53b5a8e3e66.dir
-      size: 467636694
-      nfiles: 16336
+      md5: 08bf80576ed8a9dc2f9d01c5c16fc855.dir
+      size: 536892743
+      nfiles: 5722
     - path: src/train.py
       md5: 14ba06532a7070ffa77f5a3111afd43a
       size: 1258
@@ -16,40 +16,40 @@ stages:
         n_epochs: 8
     outs:
     - path: dvclive.json
-      md5: e437ef6e25e5c4d521e0c81dfcc7c831
-      size: 187
+      md5: c3a796e3447e6c611562299138da14cf
+      size: 186
     - path: dvclive/scalars/accuracy.tsv
-      md5: 0b9ddcf0059bcc5701d1af049a30100b
+      md5: bd967b7f6c62173e8da9ad1834b90473
       size: 169
     - path: dvclive/scalars/eval/loss.tsv
-      md5: 7aa614d944753acfb200be2bf3b65e4d
+      md5: d46aaa8ab884a3afb8f96d4f766fb49f
       size: 176
     - path: dvclive/scalars/train/loss.tsv
-      md5: beedac1387212e75400880e32c0d9924
-      size: 175
+      md5: 41e3e6fb583b583032d53eb544095e36
+      size: 173
     - path: model
-      md5: 84efd91b9226f3d8de1ed2167adcedca.dir
-      size: 103001695
+      md5: ff301549bc81012042b639ab20c70488.dir
+      size: 103008479
       nfiles: 1
   inference:
     cmd: python src/inference.py
     deps:
     - path: data
-      md5: 65110eb7cc4e54ff4754f53b5a8e3e66.dir
-      size: 467636694
-      nfiles: 16336
+      md5: 08bf80576ed8a9dc2f9d01c5c16fc855.dir
+      size: 536892743
+      nfiles: 5722
     - path: model
-      md5: 84efd91b9226f3d8de1ed2167adcedca.dir
-      size: 103001695
+      md5: ff301549bc81012042b639ab20c70488.dir
+      size: 103008479
       nfiles: 1
     - path: src/inference.py
       md5: 829a5625f935a423f8463f95f7b28cba
       size: 1420
     outs:
     - path: predictions
-      md5: ba8e68c7cef468d0cb8a916839611a2b.dir
-      size: 87164
-      nfiles: 398
+      md5: 2c88acf3ea85f1414c500ff6fb7640da.dir
+      size: 86604
+      nfiles: 395
   misclassification:
     cmd:
     - ldb index predictions/ --annotation-update merge
@@ -58,18 +58,18 @@ stages:
       --target ./mislabeled
     deps:
     - path: predictions
-      md5: ba8e68c7cef468d0cb8a916839611a2b.dir
-      size: 87164
-      nfiles: 398
+      md5: 2c88acf3ea85f1414c500ff6fb7640da.dir
+      size: 86604
+      nfiles: 395
   submission:
     cmd:
-    - aws s3 rm s3://ldb-hackathon-team-1/submission-alex --recursive
-    - ldb instantiate ds:root --tag train --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/train/
-    - ldb instantiate ds:root --tag val --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex/val/
+    - aws s3 rm s3://ldb-hackathon-team-1/submission-alex-2 --recursive
+    - ldb instantiate ds:root --tag train --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex-2/train/
+    - ldb instantiate ds:root --tag val --format annot -p single-file=true -t s3://ldb-hackathon-team-1/submission-alex-2/val/
     - ldb instantiate ds:root --tag labelbook --format annot -p single-file=true -t
-      s3://ldb-hackathon-team-1/submission-alex/labelbook/
+      s3://ldb-hackathon-team-1/submission-alex-2/labelbook/
     deps:
     - path: predictions
-      md5: ba8e68c7cef468d0cb8a916839611a2b.dir
-      size: 87164
-      nfiles: 398
+      md5: 2c88acf3ea85f1414c500ff6fb7640da.dir
+      size: 86604
+      nfiles: 395
